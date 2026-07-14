@@ -6,7 +6,7 @@ No revenue share. No platform fees. No vendor lock-in. You own the code and 100%
 
 → **[Buy now — €79 launch price](https://gilmarc4.gumroad.com/l/mcp-billing)**  
 → **[Watch the demo (67s)](https://youtu.be/hzzPkL3Ro5g)**  
-→ **[Landing page](https://mcp-billing.netlify.app)**
+→ **[Landing page](mcp-billing.com)**
 
 ---
 
