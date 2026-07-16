@@ -21,6 +21,16 @@ MCP-Billing takes an explicit, documented position on retries, interrupted calls
 
 ---
 
+## How the billing decisions were made
+
+The three billing edge cases in this boilerplate (retries, partial failures, and interrupted streams) weren't designed upfront — they emerged from a real implementation problem: deciding what to do when Stripe confirmation arrives after the tool has already executed.
+
+The core decision was to write the `UsageEvent` to Postgres first, unconditionally, and only then attempt to report to Stripe. If the Stripe call fails, the event stays in the DB with `syncedAt: null` instead of disappearing into a silent catch. The index `@@index([status, syncedAt])` is there for the retry job — implementing it is documented as the buyer's responsibility.
+
+Full write-up, including the exchange with an engineering lead at AppSignal who validated the approach → [Dev.to article](https://dev.to/marcgil_dev/i-spent-a-week-on-oauth-plumbing-for-an-mcp-server-before-writing-a-single-line-of-actual-product-3ik4)
+
+---
+
 ## What's included
 
 | Feature | What it does |
