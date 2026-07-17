@@ -6,7 +6,7 @@ No revenue share. No platform fees. No vendor lock-in. You own the code and 100%
 
 → **[Buy now — €79 launch price](https://gilmarc4.gumroad.com/l/mcp-billing)**  
 → **[Watch the demo (67s)](https://youtu.be/hzzPkL3Ro5g)**  
-→ **[Landing page](mcp-billing.com)**
+→ **[Landing page](https://mcp-billing.com)**
 
 ---
 
@@ -42,7 +42,7 @@ Full write-up, including the exchange with an engineering lead at AppSignal who 
 | **Quota management** | Atomic check-and-decrement in Redis. Fail-closed on quota, fail-open on rate limiter — intentionally different behaviors. |
 | **Multi-tenant** | Each user has their own API keys, OAuth clients, quota, and usage history. |
 | **Dashboard UI** | Overview, API keys, usage, billing, settings. Built with Next.js Server Components + Tailwind. |
-| **300 tests** | Vitest. >95% coverage in `/lib`, ~87% in `/app/api`. |
+| **300+ tests** | Vitest. >95% coverage in `/lib`, ~87% in `/app/api`. |
 
 ---
 
@@ -88,7 +88,7 @@ DB:          PostgreSQL via Supabase (free tier)
 ORM:         Prisma
 Cache:       Upstash Redis (free tier)
 Deploy:      Vercel / Railway / Fly.io
-Tests:       Vitest — 300 passing
+Tests:       Vitest — 300+ passing
 ```
 
 ---
@@ -155,13 +155,12 @@ Five places in the code are marked `TODO: customize`:
 
 - **JWT access tokens are stateless** — revoking a client doesn't invalidate already-issued tokens. They expire naturally in 15 minutes. If you need immediate revocation, add a revocation check in `middleware.ts`.
 - **Quota enforcement is reactive, not preventive** — the tool call executes before usage is reported. Under high concurrency, a user can briefly exceed quota. Add a pre-call quota check in `middleware.ts` if you need hard enforcement.
-- **Stripe webhooks return 400 on any exception** — including transient Postgres outages. Stripe won't retry `4xx`. Split signature errors (keep `400`) from processing errors (`500`) in `api/webhooks/stripe/route.ts` if this matters at your volume.
 
 ---
 
 ## License
 
-MIT with resale restriction: use in unlimited personal and client projects. You may not resell the boilerplate itself as a product.
+Commercial license — unlimited personal and client projects. Resale of the boilerplate itself is not permitted.
 
 ---
 
