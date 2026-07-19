@@ -76,6 +76,17 @@ Only `status: "completed"` is billable by default. `partial` and `failed` are al
 
 ---
 
+## Read the actual code
+
+Two files from the real repo, copied verbatim — not simplified, not cleaned up for show:
+
+- [`code-samples/src/lib/billing/metering.ts`](code-samples/src/lib/billing/metering.ts) — the idempotency guarantee above, as code: `INSERT` straight into Postgres, catch the `P2002` unique-constraint violation, no `SELECT`-before-`INSERT` race window.
+- [`code-samples/src/lib/ratelimit/sliding-window.ts`](code-samples/src/lib/ratelimit/sliding-window.ts) — the rate limiter's sliding window, as an atomic Redis Lua script (`ZREMRANGEBYSCORE` + `ZCARD` + `ZADD` in one round trip, no check-then-set gap).
+
+These two are isolated on purpose — auth, OAuth, quota, webhooks, the dashboard, and the DB schema are the other 90% of what you're buying, and they only make sense wired together. This is proof of how the code reads, not the product.
+
+---
+
 ## Stack
 
 ```
@@ -141,13 +152,15 @@ npm run dev
 
 ## What's configurable
 
-Five places in the code are marked `TODO: customize`:
+Seven places in the code are marked `TODO: customize`:
 
-- `BILLABLE_STATUSES` — which event statuses get reported to Stripe (default: `["completed"]`)
-- `ANONYMOUS_RATE_LIMITS` — rate limits for unauthenticated traffic
+- `BILLABLE_STATUSES` and `STRIPE_METER_EVENT_NAME` in `metering.ts` — which event statuses get billed, and the Stripe meter event name
+- `ANONYMOUS_RATE_LIMITS` in `anonymous-limits.ts` — rate limits for unauthenticated traffic
+- Subscription status handling in `webhooks.ts` — which Stripe statuses map to canceled vs. active access
+- `SESSION_DURATION_SECONDS` in `session.ts` — how long a dashboard session lasts before re-login
+- API key rotation grace period in `api-key.ts` — how long an old key stays valid after rotation
 - `PLANS` and `PLAN_RATE_LIMITS` in `seed.ts` — your actual plan quotas and limits
-- OAuth scope validation — no fixed whitelist by default; add it in `validateAuthorizeRequest`
-- Stripe meter event name — `STRIPE_METER_EVENT_NAME` in `metering.ts`
+- Email editing in the dashboard settings page — not implemented in v1, needs a re-verification flow
 
 ---
 
